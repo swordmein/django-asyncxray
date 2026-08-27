@@ -5,7 +5,7 @@
 <h1 align="center">django-asyncxray</h1>
 
 <p align="center">
-  <strong>See where Django crosses the sync/async boundary — and how long your code waits before it even starts running.</strong>
+  <strong>See where Django crosses the sync/async boundary - and how long your code waits before it even starts running.</strong>
 </p>
 
 <p align="center">
