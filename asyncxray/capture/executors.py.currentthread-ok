@@ -1,0 +1,56 @@
+from __future__ import annotations
+
+import threading
+import time
+
+from asgiref.current_thread_executor import CurrentThreadExecutor
+
+from asyncxray.model.events import current_event
+
+_patched = False
+_patch_lock = threading.Lock()
+_original_submit = None
+
+
+def _wrap_submit(original):
+    def wrapped(self, fn, /, *args, **kwargs):
+        submit_ns = time.perf_counter_ns()
+        event = current_event.get()
+
+        def instrumented_fn(*inner_args, **inner_kwargs):
+            if event is not None:
+                worker_start_ns = time.perf_counter_ns()
+                event.queue_wait_ns = worker_start_ns - submit_ns
+            return fn(*inner_args, **inner_kwargs)
+
+        return original(self, instrumented_fn, *args, **kwargs)
+
+    return wrapped
+
+
+def patch() -> None:
+    global _patched, _original_submit
+
+    with _patch_lock:
+        if _patched:
+            return
+
+        _original_submit = CurrentThreadExecutor.submit
+        CurrentThreadExecutor.submit = _wrap_submit(_original_submit)
+
+        _patched = True
+
+
+def unpatch() -> None:
+    global _patched
+
+    with _patch_lock:
+        if not _patched:
+            return
+
+        CurrentThreadExecutor.submit = _original_submit
+        _patched = False
+
+
+def is_patched() -> bool:
+    return _patched

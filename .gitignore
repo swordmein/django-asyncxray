@@ -1,0 +1,52 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Type / lint caches
+.mypy_cache/
+.ruff_cache/
+.pyright/
+
+# Django
+*.sqlite3
+db.sqlite3
+testproject/db.sqlite3
+staticfiles/
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# AsyncXRay development backups
+*.bak
+*.before-*
+*.contention-ok
+*.threadpool-first-pass
+*.currentthread-ok
